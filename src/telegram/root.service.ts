@@ -22,7 +22,9 @@ export class RootService {
       reply_markup: {
         keyboard: [
           [{ text: 'Create Group ✏️' }, { text: 'See Groups 📚' }],
-          [{ text: 'See User Requests 📜' }],
+          [{ text: 'See User Requests 📜' }, { text: 'Notify 📢' }],
+          [{ text: 'Add Expense 💵' }, { text: 'History 📜' }],
+          [{ text: 'Accept Requests ✅' }, { text: 'Close Expenses 🔒' }],
         ],
         resize_keyboard: true,
         one_time_keyboard: false,
