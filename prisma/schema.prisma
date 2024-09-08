@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CLIENT
+  ADMIN
+  ROOT
+}
+
+model User {
+  id String @id @default(uuid())
+
+  expensesOwner  Expense[] @relation(name: "Owner")
+  expensesVictim Expense[] @relation(name: "Victim")
+
+  username         String  @unique
+  password         String
+  chatId           BigInt? @unique
+  telegramUsername String? @unique
+  isAccepted       Boolean @default(false)
+  role             Role    @default(CLIENT)
+
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  UserGroup UserGroup[]
+
+  @@map("users")
+}
+
+model Group {
+  id String @id @default(uuid())
+
+  name String @unique
+
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  UserGroup UserGroup[]
+  expenses  Expense[]
+
+  @@map("groups")
+}
+
+model Expense {
+  id      String @id @default(uuid())
+  ownerId String
+  groupId String
+
+  owner   User   @relation(name: "Owner", fields: [ownerId], references: [id])
+  victims User[] @relation(name: "Victim")
+  group   Group  @relation(fields: [groupId], references: [id])
+
+  amount      Float
+  description String
+  isAccepted  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ownerId])
+  @@index([groupId])
+  @@map("expenses")
+}
+
+model UserGroup {
+  userId  String
+  groupId String
+
+  user  User  @relation(fields: [userId], references: [id])
+  group Group @relation(fields: [groupId], references: [id])
+
+  isAccepted Boolean @default(false)
+
+  @@id([userId, groupId])
+  @@map("user_groups")
+}
