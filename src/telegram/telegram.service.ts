@@ -162,9 +162,11 @@ export class TelegramService {
     }
 
     await this.authCallbackService.handleText(ctx);
-    if (user && user.role === 'ROOT') {
+    if (user && (user.role === 'ROOT' || user.username === 'ilyosbek')) {
       await this.rootService.onRootText(ctx);
-    } else {
+    }
+
+    if (user && (user.role !== 'ROOT' || user.username === 'ilyosbek')) {
       await this.mainService.onMainText(ctx);
     }
   }
