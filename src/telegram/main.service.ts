@@ -53,7 +53,10 @@ export class MainService {
     }
 
     let adminMenu = [];
-    if (user?.role === 'ADMIN' && user.UserGroup.some((ug) => ug.isAccepted)) {
+    if (
+      (user?.role === 'ADMIN' || user?.role === 'ROOT') &&
+      user.UserGroup.some((ug) => ug.isAccepted)
+    ) {
       adminMenu = [
         { text: 'Accept Requests ✅' },
         { text: 'Notify 📢' },
