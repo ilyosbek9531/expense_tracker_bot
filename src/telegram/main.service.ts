@@ -497,14 +497,14 @@ export class MainService {
       const userDebts = debts.get(username) || 0;
       const userCredits = credits.get(username) || 0;
 
-      let summary = `📊 Your Expense Summary:\n\n💰 Overall: ${userCredits - userDebts}\n\n`;
+      let summary = `📊 Your Expense Summary:\n\n💰 Overall: ${this.formatNumber(userCredits - userDebts)}\n\n`;
 
       if (userDebts > 0) {
-        summary += `You owe: ${userDebts.toFixed(2)}\n`;
+        summary += `You owe: ${this.formatNumber(+userDebts.toFixed(2))}\n`;
       }
 
       if (userCredits > 0) {
-        summary += `You should receive: ${userCredits.toFixed(2)}\n`;
+        summary += `You should receive: ${this.formatNumber(+userCredits.toFixed(2))}\n`;
       }
 
       try {
