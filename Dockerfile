@@ -1,8 +1,9 @@
 # Stage 1: Build the NestJS application
 FROM node:22-alpine AS builder
 
-# Install pnpm
-RUN npm install -g pnpm
+# Install pnpm and required dependencies
+RUN apk add --no-cache libxcrypt-compat python3 make g++ \
+    && npm install -g pnpm
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -24,8 +25,9 @@ RUN pnpm build
 # Stage 2: Production image
 FROM node:22-alpine AS runner
 
-# Install pnpm
-RUN npm install -g pnpm
+# Install pnpm and libxcrypt-compat
+RUN apk add --no-cache libxcrypt-compat python3 make g++ \
+    && npm install -g pnpm
 
 WORKDIR /app
 
