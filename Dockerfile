@@ -1,38 +1,32 @@
 # Stage 1: Build the NestJS application
 FROM node:22-buster AS builder
 
-# Install pnpm
-RUN npm install -g pnpm
-
 # Set the working directory inside the container
 WORKDIR /app
 
 # Install dependencies
-COPY pnpm-lock.yaml ./
 COPY package.json ./
-RUN pnpm install --frozen-lockfile
+COPY package-lock.json ./
+RUN npm install
 
 # Copy the rest of the application code
 COPY . .
 
 # Generate Prisma client
-RUN pnpm prisma generate
+RUN npx prisma generate
 
 # Build the application
-RUN pnpm build
+RUN npm run build
 
 # Stage 2: Production image
 FROM node:22-buster AS runner
-
-# Install pnpm
-RUN npm install -g pnpm
 
 WORKDIR /app
 
 # Copy the compiled application and Prisma client from the build stage
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/package-lock.json ./package-lock.json
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules ./node_modules
 
@@ -43,4 +37,4 @@ COPY .env .env
 EXPOSE 1234
 
 # Command to run the application with Prisma migration
-CMD pnpm prisma migrate deploy && node dist/main
+CMD npm run prisma:migrate:deploy && node dist/main
