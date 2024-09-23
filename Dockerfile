@@ -15,6 +15,9 @@ RUN pnpm install --frozen-lockfile
 # Copy the rest of the application code
 COPY . .
 
+# Generate Prisma client
+RUN pnpm prisma generate
+
 # Build the application
 RUN pnpm build
 
@@ -30,11 +33,14 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=builder /app/node_modules ./node_modules
 
+# Copy the Prisma schema and migrations
+COPY --from=builder /app/prisma ./prisma
+
 # Copy the .env file
 COPY .env .env
 
 # Expose the port the app runs on
 EXPOSE 1234
 
-# Command to run the application with Prisma migration
+# Command to run Prisma migrations and start the application
 CMD pnpm prisma migrate deploy && pnpm start
