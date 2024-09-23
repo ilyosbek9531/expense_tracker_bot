@@ -1,5 +1,5 @@
 # Stage 1: Build the NestJS application
-FROM node:22-buster AS builder
+FROM node:22 AS builder
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -19,7 +19,7 @@ RUN npx prisma generate
 RUN npm run build
 
 # Stage 2: Production image
-FROM node:22-buster AS runner
+FROM node:22 AS runner
 
 WORKDIR /app
 
