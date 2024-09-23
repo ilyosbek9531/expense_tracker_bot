@@ -43,4 +43,4 @@ COPY .env .env
 EXPOSE 1234
 
 # Command to run Prisma migrations and start the application
-CMD pnpm prisma migrate deploy && pnpm start
+CMD pnpm prisma migrate deploy && pnpm start:prod
