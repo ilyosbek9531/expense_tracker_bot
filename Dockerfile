@@ -4,7 +4,7 @@ FROM node:18 AS builder
 # Set the working directory inside the container
 WORKDIR /app
 
-# Install pnpm
+# Install pnpm globally in the builder
 RUN npm install -g pnpm
 
 # Install dependencies
@@ -26,6 +26,9 @@ FROM node:18 AS runner
 
 # Set the working directory inside the container
 WORKDIR /app
+
+# Install pnpm globally in the runner stage
+RUN npm install -g pnpm
 
 # Copy the compiled application and dependencies from the build stage
 COPY --from=builder /app/dist ./dist
